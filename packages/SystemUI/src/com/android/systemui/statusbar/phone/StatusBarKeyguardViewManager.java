@@ -272,7 +272,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
         boolean keyguardWithoutQs = mStatusBarStateController.getState() == StatusBarState.KEYGUARD
                 && !mNotificationPanelView.isQsExpanded();
         boolean lockVisible = (mBouncer.isShowing() || keyguardWithoutQs)
-                && !mBouncer.isAnimatingAway() && !mKeyguardMonitor.isKeyguardFadingAway();
+                && !mBouncer.isAnimatingAway();
 
         if (mLastLockVisible != lockVisible) {
             mLastLockVisible = lockVisible;
@@ -281,14 +281,8 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
                         AppearAnimationUtils.DEFAULT_APPEAR_DURATION /* duration */,
                         0 /* delay */);
             } else {
-                final long duration;
-                if (needsBypassFading()) {
-                    duration = KeyguardBypassController.BYPASS_PANEL_FADE_DURATION;
-                } else {
-                    duration = AppearAnimationUtils.DEFAULT_APPEAR_DURATION / 2;
-                }
                 CrossFadeHelper.fadeOut(mLockIconContainer,
-                        duration /* duration */,
+                        AppearAnimationUtils.DEFAULT_APPEAR_DURATION / 2 /* duration */,
                         0 /* delay */, null /* runnable */);
             }
         }
@@ -578,7 +572,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             boolean needsFading = needsBypassFading();
             if (needsFading) {
                 delay = 0;
-                fadeoutDuration = KeyguardBypassController.BYPASS_PANEL_FADE_DURATION;
             } else if (wakeUnlockPulsing) {
                 delay = 0;
                 fadeoutDuration = 240;
